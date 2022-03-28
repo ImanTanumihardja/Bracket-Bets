@@ -1,8 +1,353 @@
-import { Card, Timeline, Typography } from "antd";
-import React, { useMemo } from "react";
+import { Card, Button, Typography, Input } from "antd";
 import { useMoralis } from "react-moralis";
+import { useReducer } from "react";
 
 const { Text } = Typography;
+const ABI = [
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "tournamentID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "prediction",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "createBracket",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "uint8",
+        "name": "teamCount",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "buyInPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "createTournament",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "tournamentID",
+        "type": "bytes32"
+      }
+    ],
+    "name": "endTournamnet",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "EndTournament",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "NewBracket",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "tournamentID",
+        "type": "bytes32"
+      }
+    ],
+    "name": "NewTournament",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "tournamentID",
+        "type": "bytes32"
+      }
+    ],
+    "name": "startTournamnet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "StartTournamnet",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "result",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "UpdatedResult",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "tournamentID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "result",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "updateResult",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "_tournaments",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "tournamentOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint8",
+        "name": "bracketForm",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "teamCount",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "buyInPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "hasStarted",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "hasEnded",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "tournamentOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint8",
+        "name": "teamCount",
+        "type": "uint8"
+      }
+    ],
+    "name": "generateTournamentID",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "hash",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "tournamentID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "bracketOwner",
+        "type": "address"
+      }
+    ],
+    "name": "getBracket",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256[]",
+            "name": "prediction",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "score",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Brackets.Bracket",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "tournamentID",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getBracketOwners",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isOwner",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
 
 const styles = {
   title: {
@@ -17,18 +362,89 @@ const styles = {
     border: "1px solid #e7eaf3",
     borderRadius: "0.5rem",
   },
-  timeline: {
-    marginBottom: "-45px",
-  },
+  button: {
+    border: "1px solid #000000",
+    margin: "5px"
+  }
 };
 
-export default function QuickStart({ isServerInfo }) {
+export default function QuickStart() {
   const { Moralis } = useMoralis();
-
-  const isInchDex = useMemo(
-    () => (Moralis.Plugins?.oneInch ? true : false),
-    [Moralis.Plugins?.oneInch],
+  const [createTournamentState, setCreateTournamentState] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    { name: "", teamCount: 0, buyInPrice: 0 }
   );
+
+  const [getTournamentState, setGetTournamentState] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    { tournamentID: 0, tournament: null }
+  );
+
+  const [bracketState, setBracketState] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    { tournamentID: 0, prediction: [], buyInPrice: 0 }
+  );
+
+
+  async function createTournament() {
+    let options = {
+      contractAddress: "0xb7245ab2B8D1E20E132A2c0f4F9a3114C780F9B7",
+      functionName: "createTournament",
+      abi: ABI,
+      params: {
+        name: createTournamentState.name,
+        teamCount: createTournamentState.teamCount,
+        buyInPrice: createTournamentState.buyInPrice,
+      },
+    };
+
+    const transaction = await Moralis.executeFunction(options);
+    const receipt = await transaction.wait();
+    const events = receipt.events[0];
+    console.log("Tournmanet ID: " + events.data);
+  }
+
+  async function getTournament() {
+    let options = {
+      contractAddress: "0xb7245ab2B8D1E20E132A2c0f4F9a3114C780F9B7",
+      functionName: "_tournaments",
+      abi: ABI,
+      params: {
+        "": getTournamentState.tournamentID
+      },
+    };
+
+    const transaction = await Moralis.executeFunction(options);
+    setGetTournamentState({ tournament: transaction });
+  }
+
+  async function createBracket() {
+    let options1 = {
+      contractAddress: "0xb7245ab2B8D1E20E132A2c0f4F9a3114C780F9B7",
+      functionName: "_tournaments",
+      abi: ABI,
+      params: {
+        "": bracketState.tournamentID
+      },
+    };
+
+    const transaction1 = await Moralis.executeFunction(options1);
+    const buyInPrice = transaction1.buyInPrice;
+
+    let options2 = {
+      contractAddress: "0xb7245ab2B8D1E20E132A2c0f4F9a3114C780F9B7",
+      functionName: "createBracket",
+      abi: ABI,
+      params: {
+        tournamentID: bracketState.tournamentID,
+        prediction: bracketState.prediction
+      },
+      msgValue: buyInPrice
+    };
+    const transaction2 = await Moralis.executeFunction(options2);
+    console.log(transaction2);
+
+  }
 
   return (
     <div style={{ display: "flex", gap: "10px" }}>
@@ -36,194 +452,75 @@ export default function QuickStart({ isServerInfo }) {
         style={styles.card}
         title={
           <>
-            📝 <Text strong>To-Do List</Text>
+            📝 <Text strong>Tournaments</Text>
           </>
         }
       >
-        <Timeline mode="left" style={styles.timeline}>
-          <Timeline.Item dot="📄">
-            <Text delete style={styles.text}>
-              Clone or fork{" "}
-              <a
-                href="https://github.com/ethereum-boilerplate/ethereum-boilerplate#-quick-start"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                ethereum-boilerplate
-              </a>{" "}
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="💿">
-            <Text delete style={styles.text}>
-              Install all dependencies: <Text code>npm install</Text>
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🧰">
-            <Text delete={isServerInfo} style={styles.text}>
-              Sign up for a free account on{" "}
-              <a
-                href="https://moralis.io?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplate"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Moralis
-              </a>
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="💾">
-            <Text delete={isServerInfo} style={styles.text}>
-              Create a Moralis Server (
-              <a
-                href="https://docs.moralis.io/moralis-server/getting-started/create-a-moralis-server"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                How to start Moralis Server
-              </a>
-              )
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🔏">
-            <Text delete={isServerInfo} style={styles.text}>
-              Rename <Text code>.env.example</Text> to <Text code>.env</Text>{" "}
-              and provide your <Text strong>appId</Text> and{" "}
-              <Text strong>serverUrl</Text> from{" "}
-              <a
-                href="https://moralis.io?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplate"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Moralis
-              </a>
-              :
-            </Text>
-            <Text code delete={isServerInfo} style={{ display: "block" }}>
-              REACT_APP_MORALIS_APPLICATION_ID = xxxxxxxxxxxx
-            </Text>
-            <Text code delete={isServerInfo} style={{ display: "block" }}>
-              REACT_APP_MORALIS_SERVER_URL =
-              https://xxxxxx.grandmoralis.com:2053/server
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🔁">
-            <Text delete={isServerInfo} style={styles.text}>
-              Stop the app and start it again <Text code>npm run start</Text>
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="💿">
-            <Text delete={isInchDex} style={styles.text}>
-              Install{" "}
-              <a
-                href="https://moralis.io/plugins/1inch/?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplate"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                1inch Moralis Plugin
-              </a>{" "}
-              needed for the<Text code>{"<InchDex />"}</Text> component
-              (optional)
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🚀">
-            <Text style={styles.text}>BUIDL!!!</Text>
-          </Timeline.Item>
-        </Timeline>
+        <Input
+          placeholder="Iman"
+          prefix="Name: "
+          onChange={(e) => {
+            setCreateTournamentState({ name: e.target.value });
+          }} />
+        <Input
+          placeholder="4"
+          prefix="Team Count: "
+          onChange={(e) => {
+            setCreateTournamentState({ teamCount: e.target.value });
+          }} />
+        <Input
+          placeholder="1000000000"
+          prefix="Buy In Price: "
+          suffix="Wei"
+          onChange={(e) => {
+            setCreateTournamentState({ buyInPrice: e.target.value });
+          }} />
+        <Button style={styles.button} onClick={() => createTournament()}>Create Tournament</Button>
+        <br />
+        <br />
+        <Input
+          placeholder="0xXXXXXXXXX"
+          prefix="Tournament ID: "
+          onChange={(e) => {
+            setGetTournamentState({ tournamentID: e.target.value });
+          }} />
+        <Button style={styles.button} onClick={() => getTournament()}>Get Tournament</Button>
+        <br />
+        {getTournamentState.tournament &&
+          <div>
+            <Text strong>Tournament Details:</Text>
+            <br /><Text>Name: {getTournamentState.tournament.name}</Text>
+            <br /><Text>Team Count: {getTournamentState.tournament.teamCount}</Text>
+            <br /><Text>Buy In Price: {getTournamentState.tournament.buyInPrice.toString()} wei</Text>
+            <br /><Text>Pool: {getTournamentState.tournament.pool.toString()} wei</Text>
+            <br /><Text>Started: {getTournamentState.tournament.hasStarted.toString()}</Text>
+            <br /><Text>Ended: {getTournamentState.tournament.hasEnded.toString()}</Text>
+          </div>
+        }
       </Card>
-      <div>
-        <Card
-          style={styles.card}
-          title={
-            <>
-              💣 <Text strong>Starting Local Chain (optional)</Text>
-            </>
-          }
-        >
-          <Timeline mode="left" style={styles.timeline}>
-            <Timeline.Item dot="💿">
-              <Text style={styles.text}>
-                Install{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://www.npmjs.com/package/truffle"
-                >
-                  Truffle
-                </a>{" "}
-                and{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://www.npmjs.com/package/ganache-cli"
-                >
-                  ganache-cli
-                </a>{" "}
-                <Text code>npm install -g ganache-cli truffle</Text>
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="⚙️">
-              <Text style={styles.text}>
-                Start you local devchain: <Text code>npm run devchain</Text> on
-                a new terminal
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="📡">
-              <Text style={styles.text}>
-                Deploy test contract: <Text code>npm run deploy</Text> on a new
-                terminal
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="✅" style={styles.text}>
-              <Text>
-                Open the 📄<Text strong> Contract</Text> tab
-              </Text>
-            </Timeline.Item>
-          </Timeline>
-        </Card>
-        <Card
-          style={{ marginTop: "10px", ...styles.card }}
-          title={
-            <>
-              📡{" "}
-              <Text strong> Connecting your Local Chain to the Moralis DB</Text>
-            </>
-          }
-        >
-          <Timeline mode="left" style={styles.timeline}>
-            <Timeline.Item dot="💿">
-              <Text style={styles.text}>
-                Download{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://github.com/fatedier/frp/releases"
-                >
-                  frpc
-                </a>{" "}
-                and provide missing params in the <Text code>.env</Text> file
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="⚙️">
-              <Text style={styles.text}>
-                Connect your Moralis Database and Local Chain:{" "}
-                <Text code>npm run connect</Text>
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="💾">
-              <Text style={styles.text}>
-                Add contract events you want to watch:{" "}
-                <Text code>npm run watch:events</Text>
-              </Text>
-            </Timeline.Item>
-          </Timeline>
-        </Card>
-      </div>
+      <Card
+        style={styles.card}
+        title={
+          <>
+            📝 <Text strong>Brackets</Text>
+          </>
+        }
+      >
+        <Input
+          placeholder="0xXXXXXXXXX"
+          prefix="Tournament ID: "
+          onChange={(e) => {
+            setBracketState({ tournamentID: e.target.value });
+          }} />
+        <Input
+          placeholder="X,X,X"
+          prefix="Bracket: "
+          onChange={(e) => {
+            var arr = (e.target.value.split(","));
+            setBracketState({ prediction: arr });
+          }} />
+        <Button style={styles.button} onClick={() => createBracket()}>Create Bracket</Button>
+      </Card>
     </div>
   );
 }
