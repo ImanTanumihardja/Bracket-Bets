@@ -5,349 +5,349 @@ import { useReducer } from "react";
 const { Text } = Typography;
 const ABI = [
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "bytes32",
-        "name": "tournamentID",
-        "type": "bytes32"
+        internalType: "bytes32",
+        name: "tournamentID",
+        type: "bytes32",
       },
       {
-        "internalType": "uint256[]",
-        "name": "prediction",
-        "type": "uint256[]"
-      }
+        internalType: "uint256[]",
+        name: "prediction",
+        type: "uint256[]",
+      },
     ],
-    "name": "createBracket",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
+    name: "createBracket",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
+        internalType: "string",
+        name: "name",
+        type: "string",
       },
       {
-        "internalType": "uint8",
-        "name": "teamCount",
-        "type": "uint8"
+        internalType: "uint8",
+        name: "teamCount",
+        type: "uint8",
       },
       {
-        "internalType": "uint256",
-        "name": "buyInPrice",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "buyInPrice",
+        type: "uint256",
+      },
     ],
-    "name": "createTournament",
-    "outputs": [
+    name: "createTournament",
+    outputs: [
       {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "bytes32",
-        "name": "tournamentID",
-        "type": "bytes32"
-      }
+        internalType: "bytes32",
+        name: "tournamentID",
+        type: "bytes32",
+      },
     ],
-    "name": "endTournamnet",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
+    name: "endTournamnet",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
   },
   {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
-    "anonymous": false,
-    "inputs": [],
-    "name": "EndTournament",
-    "type": "event"
+    anonymous: false,
+    inputs: [],
+    name: "EndTournament",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [],
-    "name": "NewBracket",
-    "type": "event"
+    anonymous: false,
+    inputs: [],
+    name: "NewBracket",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "tournamentID",
-        "type": "bytes32"
-      }
+        indexed: false,
+        internalType: "bytes32",
+        name: "tournamentID",
+        type: "bytes32",
+      },
     ],
-    "name": "NewTournament",
-    "type": "event"
+    name: "NewTournament",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
     ],
-    "name": "OwnershipTransferred",
-    "type": "event"
+    name: "OwnershipTransferred",
+    type: "event",
   },
   {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "bytes32",
-        "name": "tournamentID",
-        "type": "bytes32"
-      }
+        internalType: "bytes32",
+        name: "tournamentID",
+        type: "bytes32",
+      },
     ],
-    "name": "startTournamnet",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: "startTournamnet",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "anonymous": false,
-    "inputs": [],
-    "name": "StartTournamnet",
-    "type": "event"
+    anonymous: false,
+    inputs: [],
+    name: "StartTournamnet",
+    type: "event",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
     ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "result",
-        "type": "uint256[]"
-      }
+        indexed: false,
+        internalType: "uint256[]",
+        name: "result",
+        type: "uint256[]",
+      },
     ],
-    "name": "UpdatedResult",
-    "type": "event"
+    name: "UpdatedResult",
+    type: "event",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "bytes32",
-        "name": "tournamentID",
-        "type": "bytes32"
+        internalType: "bytes32",
+        name: "tournamentID",
+        type: "bytes32",
       },
       {
-        "internalType": "uint256[]",
-        "name": "result",
-        "type": "uint256[]"
-      }
+        internalType: "uint256[]",
+        name: "result",
+        type: "uint256[]",
+      },
     ],
-    "name": "updateResult",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: "updateResult",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
     ],
-    "name": "_tournaments",
-    "outputs": [
+    name: "_tournaments",
+    outputs: [
       {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
+        internalType: "string",
+        name: "name",
+        type: "string",
       },
       {
-        "internalType": "address",
-        "name": "tournamentOwner",
-        "type": "address"
+        internalType: "address",
+        name: "tournamentOwner",
+        type: "address",
       },
       {
-        "internalType": "uint8",
-        "name": "bracketForm",
-        "type": "uint8"
+        internalType: "uint8",
+        name: "bracketForm",
+        type: "uint8",
       },
       {
-        "internalType": "uint8",
-        "name": "teamCount",
-        "type": "uint8"
+        internalType: "uint8",
+        name: "teamCount",
+        type: "uint8",
       },
       {
-        "internalType": "uint256",
-        "name": "pool",
-        "type": "uint256"
+        internalType: "uint256",
+        name: "pool",
+        type: "uint256",
       },
       {
-        "internalType": "uint256",
-        "name": "buyInPrice",
-        "type": "uint256"
+        internalType: "uint256",
+        name: "buyInPrice",
+        type: "uint256",
       },
       {
-        "internalType": "bool",
-        "name": "hasStarted",
-        "type": "bool"
+        internalType: "bool",
+        name: "hasStarted",
+        type: "bool",
       },
       {
-        "internalType": "bool",
-        "name": "hasEnded",
-        "type": "bool"
-      }
+        internalType: "bool",
+        name: "hasEnded",
+        type: "bool",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
+        internalType: "string",
+        name: "name",
+        type: "string",
       },
       {
-        "internalType": "address",
-        "name": "tournamentOwner",
-        "type": "address"
+        internalType: "address",
+        name: "tournamentOwner",
+        type: "address",
       },
       {
-        "internalType": "uint8",
-        "name": "teamCount",
-        "type": "uint8"
-      }
+        internalType: "uint8",
+        name: "teamCount",
+        type: "uint8",
+      },
     ],
-    "name": "generateTournamentID",
-    "outputs": [
+    name: "generateTournamentID",
+    outputs: [
       {
-        "internalType": "bytes32",
-        "name": "hash",
-        "type": "bytes32"
-      }
+        internalType: "bytes32",
+        name: "hash",
+        type: "bytes32",
+      },
     ],
-    "stateMutability": "pure",
-    "type": "function"
+    stateMutability: "pure",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "bytes32",
-        "name": "tournamentID",
-        "type": "bytes32"
+        internalType: "bytes32",
+        name: "tournamentID",
+        type: "bytes32",
       },
       {
-        "internalType": "address",
-        "name": "bracketOwner",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "bracketOwner",
+        type: "address",
+      },
     ],
-    "name": "getBracket",
-    "outputs": [
+    name: "getBracket",
+    outputs: [
       {
-        "components": [
+        components: [
           {
-            "internalType": "uint256[]",
-            "name": "prediction",
-            "type": "uint256[]"
+            internalType: "uint256[]",
+            name: "prediction",
+            type: "uint256[]",
           },
           {
-            "internalType": "uint256",
-            "name": "score",
-            "type": "uint256"
-          }
+            internalType: "uint256",
+            name: "score",
+            type: "uint256",
+          },
         ],
-        "internalType": "struct Brackets.Bracket",
-        "name": "",
-        "type": "tuple"
-      }
+        internalType: "struct Brackets.Bracket",
+        name: "",
+        type: "tuple",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "bytes32",
-        "name": "tournamentID",
-        "type": "bytes32"
-      }
+        internalType: "bytes32",
+        name: "tournamentID",
+        type: "bytes32",
+      },
     ],
-    "name": "getBracketOwners",
-    "outputs": [
+    name: "getBracketOwners",
+    outputs: [
       {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
-      }
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [],
-    "name": "isOwner",
-    "outputs": [
+    inputs: [],
+    name: "isOwner",
+    outputs: [
       {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
+    inputs: [],
+    name: "owner",
+    outputs: [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
-  }
-]
+    stateMutability: "view",
+    type: "function",
+  },
+];
 
 const styles = {
   title: {
@@ -364,27 +364,26 @@ const styles = {
   },
   button: {
     border: "1px solid #000000",
-    margin: "5px"
-  }
+    margin: "5px",
+  },
 };
 
 export default function QuickStart() {
   const { Moralis } = useMoralis();
   const [createTournamentState, setCreateTournamentState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    { name: "", teamCount: 0, buyInPrice: 0 }
+    { name: "", teamCount: 0, buyInPrice: 0 },
   );
 
   const [getTournamentState, setGetTournamentState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    { tournamentID: 0, tournament: null }
+    { tournamentID: 0, tournament: null },
   );
 
   const [bracketState, setBracketState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    { tournamentID: 0, prediction: [], buyInPrice: 0 }
+    { tournamentID: 0, prediction: [], buyInPrice: 0 },
   );
-
 
   async function createTournament() {
     let options = {
@@ -410,7 +409,7 @@ export default function QuickStart() {
       functionName: "_tournaments",
       abi: ABI,
       params: {
-        "": getTournamentState.tournamentID
+        "": getTournamentState.tournamentID,
       },
     };
 
@@ -424,7 +423,7 @@ export default function QuickStart() {
       functionName: "_tournaments",
       abi: ABI,
       params: {
-        "": bracketState.tournamentID
+        "": bracketState.tournamentID,
       },
     };
 
@@ -437,13 +436,12 @@ export default function QuickStart() {
       abi: ABI,
       params: {
         tournamentID: bracketState.tournamentID,
-        prediction: bracketState.prediction
+        prediction: bracketState.prediction,
       },
-      msgValue: buyInPrice
+      msgValue: buyInPrice,
     };
     const transaction2 = await Moralis.executeFunction(options2);
     console.log(transaction2);
-
   }
 
   return (
@@ -461,21 +459,26 @@ export default function QuickStart() {
           prefix="Name: "
           onChange={(e) => {
             setCreateTournamentState({ name: e.target.value });
-          }} />
+          }}
+        />
         <Input
           placeholder="4"
           prefix="Team Count: "
           onChange={(e) => {
             setCreateTournamentState({ teamCount: e.target.value });
-          }} />
+          }}
+        />
         <Input
           placeholder="1000000000"
           prefix="Buy In Price: "
           suffix="Wei"
           onChange={(e) => {
             setCreateTournamentState({ buyInPrice: e.target.value });
-          }} />
-        <Button style={styles.button} onClick={() => createTournament()}>Create Tournament</Button>
+          }}
+        />
+        <Button style={styles.button} onClick={() => createTournament()}>
+          Create Tournament
+        </Button>
         <br />
         <br />
         <Input
@@ -483,20 +486,38 @@ export default function QuickStart() {
           prefix="Tournament ID: "
           onChange={(e) => {
             setGetTournamentState({ tournamentID: e.target.value });
-          }} />
-        <Button style={styles.button} onClick={() => getTournament()}>Get Tournament</Button>
+          }}
+        />
+        <Button style={styles.button} onClick={() => getTournament()}>
+          Get Tournament
+        </Button>
         <br />
-        {getTournamentState.tournament &&
+        {getTournamentState.tournament && (
           <div>
             <Text strong>Tournament Details:</Text>
-            <br /><Text>Name: {getTournamentState.tournament.name}</Text>
-            <br /><Text>Team Count: {getTournamentState.tournament.teamCount}</Text>
-            <br /><Text>Buy In Price: {getTournamentState.tournament.buyInPrice.toString()} wei</Text>
-            <br /><Text>Pool: {getTournamentState.tournament.pool.toString()} wei</Text>
-            <br /><Text>Started: {getTournamentState.tournament.hasStarted.toString()}</Text>
-            <br /><Text>Ended: {getTournamentState.tournament.hasEnded.toString()}</Text>
+            <br />
+            <Text>Name: {getTournamentState.tournament.name}</Text>
+            <br />
+            <Text>Team Count: {getTournamentState.tournament.teamCount}</Text>
+            <br />
+            <Text>
+              Buy In Price:{" "}
+              {getTournamentState.tournament.buyInPrice.toString()} wei
+            </Text>
+            <br />
+            <Text>
+              Pool: {getTournamentState.tournament.pool.toString()} wei
+            </Text>
+            <br />
+            <Text>
+              Started: {getTournamentState.tournament.hasStarted.toString()}
+            </Text>
+            <br />
+            <Text>
+              Ended: {getTournamentState.tournament.hasEnded.toString()}
+            </Text>
           </div>
-        }
+        )}
       </Card>
       <Card
         style={styles.card}
@@ -511,15 +532,19 @@ export default function QuickStart() {
           prefix="Tournament ID: "
           onChange={(e) => {
             setBracketState({ tournamentID: e.target.value });
-          }} />
+          }}
+        />
         <Input
           placeholder="X,X,X"
           prefix="Bracket: "
           onChange={(e) => {
-            var arr = (e.target.value.split(","));
+            var arr = e.target.value.split(",");
             setBracketState({ prediction: arr });
-          }} />
-        <Button style={styles.button} onClick={() => createBracket()}>Create Bracket</Button>
+          }}
+        />
+        <Button style={styles.button} onClick={() => createBracket()}>
+          Create Bracket
+        </Button>
       </Card>
     </div>
   );
